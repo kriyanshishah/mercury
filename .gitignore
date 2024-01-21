@@ -2,5 +2,4 @@
 dist/
 .env
 menv/
-demo*
 build/
