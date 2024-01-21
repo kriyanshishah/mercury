@@ -1,0 +1,4 @@
+recursive-include mercury/frontend-dist/ *
+recursive-include mercury/frontend-single-site-dist/ *
+include mercury/requirements.txt
+include README.md
