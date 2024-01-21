@@ -3,5 +3,4 @@ dist/
 .env
 menv/
 demo*
-/docs
 build/
