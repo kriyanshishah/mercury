@@ -39,6 +39,8 @@ if os.environ.get("MERCURY_SERVER_URL") is None:
         "wss://", "https://"
     )
 
+# ks
+server_url = server_url.replace("http://", "ws://").replace("https://", "wss://")
 
 def signal_handler(signal, frame):
     global stop_event
