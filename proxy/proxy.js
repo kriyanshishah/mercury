@@ -3,7 +3,7 @@ var httpProxy = require('http-proxy')
 let server_ip='127.0.0.1'
 let server_port=8080, proxy_port=10000, 
 var proxy = httpProxy.createProxyServer({target: "http://" +`${server_ip}:${server_port}`, ws:true}).listen(proxy_port);
-var username = jhub_username
+var username = process.env.JHUB_USER
 proxy.on('proxyReq', (proxyReq, req, res, options) => {
     let path = proxyReq.path;
     let tokens = path.split('/')
