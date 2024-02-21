@@ -2,7 +2,7 @@ c = get_config() #noqa
 
 c.ServerProxy.servers = {
     'mercury': {
-        'command': ['runMercuryProxy.sh'],
+        'command': ['mercury', 'run', '0.0.0.0:8080', '--verbose'],
         'timeout': 2 * 60,
         'absolute_url': False,
         'port': '10000'
