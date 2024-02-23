@@ -31,7 +31,7 @@ c.ServerProxy.servers = {
         'command': ['mercury', 'run', '0.0.0.0:8080', '--verbose'],
         'timeout': 2 * 60,
         'absolute_url': False,
-        'port': '10000'
+        'port': '8080',
         'new_browser_window': False,
         'launcher_entry':{
             'enabled': True,
