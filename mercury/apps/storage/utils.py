@@ -18,7 +18,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 MERCURY_DATA_DIR = Path(os.getenv('MERCURY_DATA_DIR', BASE_DIR))
 
 MEDIA_ROOT = str(MERCURY_DATA_DIR / "media")
-MEDIA_URL = "/media/"
+# ks
+MEDIA_URL = os.environ.get("MERCURY_APP_PREFIX", "") + "/media/"
 
 
 def get_bucket_key(site, user, filename):

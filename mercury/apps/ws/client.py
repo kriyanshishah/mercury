@@ -16,6 +16,7 @@ from apps.workers.models import Worker
 from apps.ws.tasks import task_start_websocket_worker
 from apps.ws.utils import client_group, worker_group
 from apps.storage.s3utils import clean_worker_files
+import os
 
 log = logging.getLogger(__name__)
 
@@ -123,6 +124,8 @@ class ClientProxy(WebsocketConsumer):
         #         "payload": {"purpose": "worker-state", "state": "UsageLimitReached"},
         #     },
         # )
+        # ks
+        self.server_address = os.environ.get("MERCURY_SERVER_URL", "http://127.0.0.1:8080")
 
         with transaction.atomic():
             log.debug("Create worker in db")

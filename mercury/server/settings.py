@@ -245,7 +245,8 @@ if not os.path.exists(MEDIA_ROOT):
     except Exception as e:
         raise Exception(f"Cannot create directory {MEDIA_ROOT}. {str(e)}")
 
-MEDIA_URL = "/media/"
+# ks
+MEDIA_URL = os.environ.get("MERCURY_APP_PREFIX", "") + "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
