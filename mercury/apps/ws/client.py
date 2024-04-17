@@ -1,3 +1,4 @@
+import os
 import json
 import time
 import logging
@@ -18,16 +19,17 @@ from apps.ws.utils import client_group, worker_group
 from apps.storage.s3utils import clean_worker_files
 import os
 
+logging.basicConfig(
+    format="CLIENT %(asctime)s %(message)s",
+    level=os.getenv("DJANGO_LOG_LEVEL", "ERROR"),
+)
 log = logging.getLogger(__name__)
-
 
 class ClientProxy(WebsocketConsumer):
     def connect(self):
-        log.debug("Trying to connect client")
-
+        log.info("Trying to connect client")
         self.notebook_id = int(self.scope["url_route"]["kwargs"]["notebook_id"])
         self.session_id = self.scope["url_route"]["kwargs"]["session_id"]
-
         self.user = self.scope["user"]
 
         nb = Notebook.objects.get(pk=self.notebook_id)
@@ -40,8 +42,7 @@ class ClientProxy(WebsocketConsumer):
                 if not member and not owner:
                     self.close()
 
-        log.debug(f"Client connect to {self.notebook_id}/{self.session_id}")
-
+        log.info(f"Client connected to {self.notebook_id}/{self.session_id}")
         self.client_group = client_group(self.notebook_id, self.session_id)
         self.worker_group = worker_group(self.notebook_id, self.session_id)
 
@@ -53,18 +54,19 @@ class ClientProxy(WebsocketConsumer):
 
         self.start_time = time.time()
         self.site_owner = nb.hosted_on.created_by
-
+        log.info(f"Client accept connection")
         self.accept()
 
     def disconnect(self, close_code):
+        log.info("Client disconnect")
         #
         # close worker
         #
+        log.info("Send close message to worker")
         async_to_sync(self.channel_layer.group_send)(
             self.worker_group,
             {"type": "broadcast_message", "payload": {"purpose": "close-worker"}},
         )
-
         async_to_sync(self.channel_layer.group_discard)(
             self.client_group, self.channel_name
         )
@@ -79,9 +81,10 @@ class ClientProxy(WebsocketConsumer):
 
         self.site_owner.profile.usage = json.dumps(prev_usage)
         self.site_owner.profile.save()
+        log.info("Client disconnected")
 
     def receive(self, text_data):
-        log.debug(f"Received from client: {text_data}")
+        log.info(f"Received from client: {text_data}")
 
         json_data = json.loads(text_data)
 
@@ -111,11 +114,13 @@ class ClientProxy(WebsocketConsumer):
         self.send(text_data=json.dumps(payload))
 
     def need_worker(self):
+        log.info("Client needs worker")
+
         if self.server_address is None:
             return
 
         # usage = json.loads(self.site_owner.profile.usage).get("usage", 0)
-        # log.debug(f"Current usage {usage} seconds")
+        # log.info(f"Current usage {usage} seconds")
 
         # async_to_sync(self.channel_layer.group_send)(
         #     self.client_group,
@@ -128,7 +133,7 @@ class ClientProxy(WebsocketConsumer):
         self.server_address = os.environ.get("MERCURY_SERVER_URL", "http://127.0.0.1:8080")
 
         with transaction.atomic():
-            log.debug("Create worker in db")
+            log.info("Create worker in db")
             worker = Worker(
                 session_id=self.session_id,
                 notebook_id=self.notebook_id,
@@ -148,6 +153,7 @@ class ClientProxy(WebsocketConsumer):
                 if "0.0.0.0" not in self.server_address
                 else self.server_address + ":9000",
             }
+            log.info(f"Please start worker for client with job_params\n{json.dumps(job_params, indent=4)}")
             transaction.on_commit(lambda: task_start_websocket_worker.delay(job_params))
 
     def worker_ping(self):

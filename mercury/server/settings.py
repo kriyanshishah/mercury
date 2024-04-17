@@ -290,6 +290,18 @@ LOGGING = {
             "level": os.getenv("DJANGO_LOG_LEVEL", "ERROR"),
             "propagate": False,
         },
+        'daphne': {
+            'handlers': [
+                'console', "file"
+            ],
+            'level': os.getenv("DJANGO_LOG_LEVEL", "ERROR")
+        },
+        'channels': {
+            'handlers': [
+                'console', "file"
+            ],
+            'level': os.getenv("DJANGO_LOG_LEVEL", "ERROR")
+        },
     },
 }
 

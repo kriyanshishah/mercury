@@ -9,7 +9,7 @@ BACKEND_DIR = os.path.join(CURRENT_DIR, "..")
 sys.path.insert(0, BACKEND_DIR)
 
 LOG_LEVEL = (
-    logging.ERROR if os.environ.get("MERCURY_VERBOSE", "0") == "0" else logging.DEBUG
+    logging.ERROR if os.environ.get("DJANGO_LOG_LEVEL", "ERROR") == "ERROR" else logging.INFO
 )
 
 logging.basicConfig(
@@ -44,7 +44,7 @@ server_url = server_url.replace("http://", "ws://").replace("https://", "wss://"
 
 def signal_handler(signal, frame):
     global stop_event
-    log.debug("\nBye bye!")
+    log.info("\nBye bye!")
     stop_event.set()
     RESTClient.delete_worker_in_db(session_id, worker_id, notebook_id)
     sys.exit(1)

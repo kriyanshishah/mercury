@@ -1,4 +1,15 @@
+# New way for visual programming!
 
+We are working on a new way for visual programming. We developed a desktop application called [MLJAR Studio](https://mljar.com). 
+It is a notebook based development environment with interactive code recipes and managed Python environment. All running locally on your machine.
+
+<p align="center">
+  <img 
+    alt="mljar AutoML"
+    src="https://raw.githubusercontent.com/pplonski/pplonski/main/media/piece-of-code.png" width="88%" />  
+</p>
+
+---
 
 <p align="center">
   <img 
@@ -62,6 +73,7 @@ Mercury provides multiple widgets. There are 3 types of widgets:
     alt="Mercury convert Jupyter Notebook to Web App"
     src="https://raw.githubusercontent.com/mljar/visual-identity/main/mercury/readme/widgets_black.png#gh-dark-mode-only" width="100%" />  
 </p>
+
 ## Integrations
  
 Mercury works with virtually every Python package!
